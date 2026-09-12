@@ -1,0 +1,82 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('devlog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+<Layout title={`Tanvi | ${post.data.title}`}>
+  <article>
+    <a href="/devlog" class="back-link">← Back to Blog</a>
+    <span class="post-date">
+      {post.data.date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })}
+    </span>
+    <h1>{post.data.title}</h1>
+    {post.data.tags && (
+      <div class="tags">
+        {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+      </div>
+    )}
+    <div class="content">
+      <Content />
+    </div>
+  </article>
+
+  <style>
+    .back-link {
+      display: inline-block;
+      color: var(--color-accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .back-link:hover {
+      color: var(--color-accent-light);
+      text-decoration: underline;
+    }
+    .post-date {
+      color: var(--color-accent);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    h1 { font-size: 2rem; margin: 0.5rem 0 0.5rem; }
+    .tags {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .tag {
+      background: rgba(183, 157, 242, 0.15);
+      color: var(--color-violet);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+    }
+    .content {
+      line-height: 1.8;
+      color: var(--color-text);
+    }
+    .content :global(h2) {
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    .content :global(ul) {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</Layout>
