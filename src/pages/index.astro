@@ -56,24 +56,34 @@ const selected = featured.length > 0 ? featured : projects.slice(0, 2);
           </div>
         </div>
 
-        <dl class="now-strip" aria-label="Current bench">
-          <div class="now-item">
-            <dt>Studying</dt>
-            <dd>ENC, BITS Goa</dd>
+        <section class="bench-index" aria-label="Current bench">
+          <div class="index-head">
+            <span>Current bench</span>
+            <span aria-hidden="true">Index</span>
           </div>
-          <div class="now-item">
-            <dt>Building</dt>
-            <dd>This site, then my first Project</dd>
-          </div>
-          <div class="now-item">
-            <dt>Learning</dt>
-            <dd>Astro, deployment, embedded fundamentals</dd>
-          </div>
-          <div class="now-item">
-            <dt>Next</dt>
-            <dd>My first real Project</dd>
-          </div>
-        </dl>
+          <dl class="book-index">
+            <div class="index-row">
+              <dt>Building</dt>
+              <span class="index-leader" aria-hidden="true"></span>
+              <dd>This site, then my first Project</dd>
+            </div>
+            <div class="index-row">
+              <dt>Learning</dt>
+              <span class="index-leader" aria-hidden="true"></span>
+              <dd>Astro, deployment, embedded fundamentals</dd>
+            </div>
+            <div class="index-row">
+              <dt>Next</dt>
+              <span class="index-leader" aria-hidden="true"></span>
+              <dd>My first real Project</dd>
+            </div>
+            <div class="index-row">
+              <dt>Studying</dt>
+              <span class="index-leader" aria-hidden="true"></span>
+              <dd>ENC, BITS Goa</dd>
+            </div>
+          </dl>
+        </section>
       </section>
 
       <section id="work" class="section">
@@ -154,36 +164,66 @@ const selected = featured.length > 0 ? featured : projects.slice(0, 2);
     line-height: 1.55;
   }
 
-  .now-strip {
+  .bench-index {
+    max-width: 64rem;
+    margin-top: 2.5rem;
+  }
+
+  .index-head {
     display: flex;
-    flex-wrap: wrap;
     align-items: baseline;
-    gap: 0.55rem 1.75rem;
-    max-width: 72ch;
-    margin-top: 2.25rem;
-    padding-block: 0.9rem;
-    border-top: 1px solid var(--rule);
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .now-item {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.45rem;
-  }
-
-  .now-item dt {
-    color: var(--lilac);
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid var(--ink);
+    color: var(--muted);
     font-family: var(--font-mono);
     font-size: 0.6rem;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
   }
 
-  .now-item dd {
-    color: var(--ink);
-    font-size: 0.9rem;
-    line-height: 1.35;
+  .index-head span:last-child {
+    color: var(--lilac);
+  }
+
+  .book-index {
+    margin-top: 0.25rem;
+  }
+
+  .index-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding-block: 0.5rem;
+    border-bottom: 1px dotted var(--rule);
+  }
+
+  .index-row:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .index-row dt {
+    font-family: var(--font-body);
+    font-size: 1.02rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .index-leader {
+    flex: 1;
+    min-width: 1.5rem;
+    border-bottom: 1px dotted var(--rule-strong);
+    transform: translateY(-0.28em);
+  }
+
+  .index-row dd {
+    max-width: 58%;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.4;
+    text-align: right;
   }
 
   .latest-list {
@@ -239,6 +279,22 @@ const selected = featured.length > 0 ? featured : projects.slice(0, 2);
 
     .latest-summary {
       grid-column: 1;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .index-row {
+      flex-wrap: wrap;
+    }
+
+    .index-leader {
+      display: none;
+    }
+
+    .index-row dd {
+      flex-basis: 100%;
+      max-width: 100%;
+      text-align: left;
     }
   }
 </style>
