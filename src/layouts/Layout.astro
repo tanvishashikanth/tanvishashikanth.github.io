@@ -45,7 +45,7 @@ const { title = "Tanvi | Developer Portfolio" } = Astro.props;
     --color-accent-light: #ffd76a;    /* brighter gold for hovers */
     --color-violet: #b79df2;          /* readable violet for secondary accents (7:1 on bg) */
     --color-text: #efeaf7;            /* near-white lavender text (~14:1 on bg) */
-    --color-text-muted: #c4b8dc;      /* secondary text (~8.8:1 on bg) */
+    --color-text-muted: #c1b1d8;      /* secondary text (~8.8:1 on bg) */
     --color-border: #453564;
     --color-text-on-accent: #241b35;  /* dark purple text on gold fills (10:1) */
   }
@@ -87,6 +87,7 @@ const { title = "Tanvi | Developer Portfolio" } = Astro.props;
   .nav-links {
     display: flex;
     gap: 1.5rem;
+    margin-right: calc((100vw - 800px) / -4 + 1rem);
   }
   .nav-links a {
     text-decoration: none;
