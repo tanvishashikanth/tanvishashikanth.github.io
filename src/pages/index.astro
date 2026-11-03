@@ -26,7 +26,7 @@ const selected = featured.length > 0 ? featured : projects.slice(0, 2);
         { href: "#work", label: "02 Projects" },
         { href: "#devlog", label: "03 Devlog" },
       ]}
-      note="BITS Goa · ECE, second year"
+      note="BITS Goa · ENC, second year"
     />
 
     <div>
@@ -39,9 +39,9 @@ const selected = featured.length > 0 ? featured : projects.slice(0, 2);
             I build where <em>hardware</em> meets <em>software</em>.
           </h1>
           <p class="hero-bio">
-            I'm Tanvi. I study electronics and computing, and I use this space
-            to keep the Projects I'm building and the things I'm learning in
-            public.
+            I'm Tanvi. I study Electronics &amp; Computer Engineering, and I use
+            this space to keep the Projects I'm building and the things I'm
+            learning in public.
           </p>
           <div class="actions">
             <a
@@ -62,7 +62,7 @@ const selected = featured.length > 0 ? featured : projects.slice(0, 2);
             <div class="bench-row">
               <dt>Studying</dt>
               <span class="leader" aria-hidden="true"></span>
-              <dd>ECE, BITS Goa</dd>
+              <dd>ENC, BITS Goa</dd>
             </div>
             <div class="bench-row">
               <dt>Building</dt>
@@ -144,7 +144,7 @@ const selected = featured.length > 0 ? featured : projects.slice(0, 2);
   }
 
   .hero h1 {
-    font-size: var(--step-5);
+    font-size: clamp(3rem, 1.9rem + 5.2vw, 5.5rem);
   }
 
   .hero h1 em {
