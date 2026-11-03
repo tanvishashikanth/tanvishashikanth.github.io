@@ -16,7 +16,38 @@ const { label, items, note, meta = [], ariaLabel = "On this page" } =
   Astro.props;
 ---
 
-<aside class="rail" aria-label={ariaLabel}>
+<button
+  class="rail-toggle"
+  type="button"
+  aria-label="Page index"
+  aria-expanded="false"
+  aria-controls="rail-panel"
+  data-rail-toggle
+>
+  Index
+</button>
+
+<div
+  class="rail-backdrop"
+  aria-hidden="true"
+  data-rail-backdrop
+></div>
+
+<aside
+  class="rail"
+  id="rail-panel"
+  aria-label={ariaLabel}
+  data-rail-panel
+  tabindex="-1"
+>
+  <button
+    class="rail-close"
+    type="button"
+    aria-label="Close page index"
+    data-rail-close
+  >
+    Close
+  </button>
   <span class="rail-title">{label}</span>
   <ul class="rail-list">
     {
@@ -46,6 +77,51 @@ const { label, items, note, meta = [], ariaLabel = "On this page" } =
 </aside>
 
 <script>
+  const panel = document.querySelector<HTMLElement>("[data-rail-panel]");
+  const toggle = document.querySelector<HTMLButtonElement>("[data-rail-toggle]");
+  const closeButton = document.querySelector<HTMLButtonElement>(
+    "[data-rail-close]"
+  );
+  const backdrop = document.querySelector<HTMLElement>("[data-rail-backdrop]");
+
+  if (panel && toggle && backdrop) {
+    const setOpen = (open: boolean) => {
+      panel.classList.toggle("is-open", open);
+      backdrop.classList.toggle("is-open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      document.documentElement.classList.toggle("rail-open", open);
+    };
+
+    const isOpen = () => toggle.getAttribute("aria-expanded") === "true";
+
+    toggle.addEventListener("click", () => {
+      const open = !isOpen();
+      setOpen(open);
+      if (open) requestAnimationFrame(() => closeButton?.focus());
+    });
+
+    const close = () => {
+      if (!isOpen()) return;
+      setOpen(false);
+      toggle.focus();
+    };
+
+    closeButton?.addEventListener("click", close);
+    backdrop.addEventListener("click", close);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") close();
+    });
+    panel.addEventListener("click", (event) => {
+      if ((event.target as Element).closest("a")) setOpen(false);
+    });
+
+    window
+      .matchMedia("(min-width: 821px)")
+      .addEventListener("change", (event) => {
+        if (event.matches) setOpen(false);
+      });
+  }
+
   const links = Array.from(
     document.querySelectorAll<HTMLAnchorElement>("[data-rail-link]")
   );

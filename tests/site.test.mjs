@@ -105,6 +105,23 @@ test("shared chrome and accessibility basics are present", () => {
   }
 });
 
+test("the rail can be toggled on small screens", () => {
+  for (const page of pages) {
+    const { document } = page;
+    const toggle = document.querySelector("[data-rail-toggle]");
+    assert.ok(toggle, `${page.name} needs a rail toggle`);
+    assert.equal(toggle.getAttribute("aria-expanded"), "false");
+
+    const panel = document.getElementById(
+      toggle.getAttribute("aria-controls") ?? ""
+    );
+    assert.ok(panel, "the toggle should control the rail panel");
+    assert.ok(panel.querySelector("a"), "the drawer should hold the index links");
+    assert.ok(document.querySelector("[data-rail-backdrop]"));
+    assert.ok(document.querySelector("[data-rail-close]"));
+  }
+});
+
 test("home states the thesis and renders the bench", () => {
   const { document } = home;
   const h1 = document.querySelector("h1");
