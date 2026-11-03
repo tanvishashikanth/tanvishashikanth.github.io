@@ -23,15 +23,6 @@
   --step-4: clamp(2.6rem, 1.8rem + 3.8vw, 4.6rem);
   --step-5: clamp(3.2rem, 1.9rem + 6vw, 6.2rem);
 
-  --space-1: 0.5rem;
-  --space-2: 0.75rem;
-  --space-3: 1rem;
-  --space-4: 1.5rem;
-  --space-5: 2rem;
-  --space-6: 3rem;
-  --space-7: 4.5rem;
-  --space-8: 6rem;
-
   --measure: 64ch;
   --shell: 1120px;
   --rail: 9rem;
@@ -122,7 +113,6 @@ a {
   text-transform: uppercase;
   text-decoration: none;
   transform: translateY(-160%);
-  transition: transform 0.2s ease;
 }
 
 .skip-link:focus {
@@ -327,6 +317,18 @@ main {
   letter-spacing: 0.06em;
 }
 
+.rail-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem 0 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 /* Sections and type */
 
 .section {
@@ -381,10 +383,6 @@ h3.display {
   color: var(--muted);
   font-size: var(--step-1);
   line-height: 1.5;
-}
-
-.body-copy {
-  max-width: var(--measure);
 }
 
 /* Actions */
@@ -569,7 +567,7 @@ h3.display {
 .prose h2 {
   margin-top: 2.5rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid var(--lilac);
   font-family: var(--font-display);
   font-weight: 400;
   font-size: var(--step-2);
@@ -725,6 +723,12 @@ h3.display {
 
   .rail-note {
     display: none;
+  }
+
+  .rail-meta {
+    flex-direction: row;
+    gap: 0.75rem;
+    padding-top: 0;
   }
 }
 

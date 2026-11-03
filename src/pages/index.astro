@@ -1,24 +1,17 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Rail from "../components/Rail.astro";
 import ProjectRow from "../components/ProjectRow.astro";
 import { getCollection } from "astro:content";
 import { projects } from "../data/projects.js";
 import { site } from "../data/site.js";
+import { formatDate } from "../lib/dates.js";
+import { sortLogEntries } from "../lib/devlog.js";
 
-const posts = (await getCollection("devlog")).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-);
-const latest = posts.slice(0, 2);
+const latest = sortLogEntries(await getCollection("devlog")).slice(0, 2);
 
 const featured = projects.filter((project) => project.featured);
 const selected = featured.length > 0 ? featured : projects.slice(0, 2);
-
-const formatDate = (date: Date) =>
-  date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
 ---
 
 <Layout
@@ -26,15 +19,15 @@ const formatDate = (date: Date) =>
   description="Tanvi Shashikanth is an Electronics & Computer Engineering student at BITS Goa. Projects, notes, and a public Devlog."
 >
   <div class="shell page">
-    <aside class="rail" aria-label="On this page">
-      <span class="rail-title">Index</span>
-      <ul class="rail-list">
-        <li><a href="#intro" data-rail-link>01 Intro</a></li>
-        <li><a href="#work" data-rail-link>02 Work</a></li>
-        <li><a href="#devlog" data-rail-link>03 Devlog</a></li>
-      </ul>
-      <p class="rail-note">BITS Goa<br />ECE · Second year</p>
-    </aside>
+    <Rail
+      label="Index"
+      items={[
+        { href: "#intro", label: "01 Intro" },
+        { href: "#work", label: "02 Projects" },
+        { href: "#devlog", label: "03 Devlog" },
+      ]}
+      note="BITS Goa · ECE, second year"
+    />
 
     <div>
       <section id="intro" class="section hero">
@@ -82,9 +75,9 @@ const formatDate = (date: Date) =>
               <dd>Astro, deployment, embedded fundamentals</dd>
             </div>
             <div class="bench-row">
-              <dt>Open to</dt>
+              <dt>Next</dt>
               <span class="leader" aria-hidden="true"></span>
-              <dd>Internships and collaborations</dd>
+              <dd>My first real Project</dd>
             </div>
           </dl>
         </aside>
@@ -93,7 +86,7 @@ const formatDate = (date: Date) =>
       <section id="work" class="section">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Selected work</p>
+            <p class="eyebrow">Selected Projects</p>
             <h2 class="display">Projects</h2>
           </div>
           <a class="text-link" href="/projects">All projects</a>

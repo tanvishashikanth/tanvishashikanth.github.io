@@ -1,0 +1,79 @@
+---
+interface RailItem {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  label: string;
+  items: RailItem[];
+  note?: string;
+  meta?: string[];
+  ariaLabel?: string;
+}
+
+const { label, items, note, meta = [], ariaLabel = "On this page" } =
+  Astro.props;
+---
+
+<aside class="rail" aria-label={ariaLabel}>
+  <span class="rail-title">{label}</span>
+  <ul class="rail-list">
+    {
+      items.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            data-rail-link={item.href.startsWith("#") ? true : undefined}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  {
+    meta.length > 0 && (
+      <ul class="rail-meta">
+        {meta.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    )
+  }
+  {note && <p class="rail-note">{note}</p>}
+</aside>
+
+<script>
+  const links = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>("[data-rail-link]")
+  );
+  const sections = links
+    .map((link) =>
+      document.querySelector<HTMLElement>(link.getAttribute("href") ?? "")
+    )
+    .filter((section): section is HTMLElement => section !== null);
+
+  if ("IntersectionObserver" in window && sections.length > 0) {
+    const setActive = (id: string) => {
+      links.forEach((link) => {
+        link.classList.toggle(
+          "is-active",
+          link.getAttribute("href") === `#${id}`
+        );
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-20% 0px -65% 0px", threshold: 0 }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    setActive(sections[0].id);
+  }
+</script>

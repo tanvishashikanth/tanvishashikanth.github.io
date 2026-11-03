@@ -1,22 +1,13 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import Rail from "../../components/Rail.astro";
 import { getCollection } from "astro:content";
 import { site } from "../../data/site.js";
+import { formatDate } from "../../lib/dates.js";
+import { numberLogEntries } from "../../lib/devlog.js";
 
-const posts = (await getCollection("devlog")).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-);
-const entries = posts.map((post, index) => ({
-  post,
-  logNumber: posts.length - index,
-}));
-
-const formatDate = (date: Date) =>
-  date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+const entries = numberLogEntries(await getCollection("devlog"));
+const entryCount = entries.length;
 ---
 
 <Layout
@@ -24,16 +15,11 @@ const formatDate = (date: Date) =>
   description="Lecture notes, project progress, and reflections from Tanvi Shashikanth's engineering degree."
 >
   <div class="shell page">
-    <aside class="rail" aria-label="On this page">
-      <span class="rail-title">Devlog</span>
-      <ul class="rail-list">
-        <li><a href="#entries" data-rail-link>01 Entries</a></li>
-      </ul>
-      <p class="rail-note">
-        {posts.length}
-        {posts.length === 1 ? " entry" : " entries"} so far
-      </p>
-    </aside>
+    <Rail
+      label="Devlog"
+      items={[{ href: "#entries", label: "01 Entries" }]}
+      note={`${entryCount} ${entryCount === 1 ? "entry" : "entries"} so far`}
+    />
 
     <section id="entries" class="section">
       <p class="eyebrow">Log</p>

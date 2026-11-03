@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Rail from "../components/Rail.astro";
 import ProjectRow from "../components/ProjectRow.astro";
 import { projects } from "../data/projects.js";
 import { site } from "../data/site.js";
@@ -10,18 +11,14 @@ import { site } from "../data/site.js";
   description="Selected Projects by Tanvi Shashikanth, an Electronics & Computer Engineering student at BITS Goa."
 >
   <div class="shell page">
-    <aside class="rail" aria-label="On this page">
-      <span class="rail-title">Projects</span>
-      <ul class="rail-list">
-        <li><a href="#all-projects" data-rail-link>01 Selected</a></li>
-      </ul>
-      <p class="rail-note">
-        Placeholder rows stay marked until the work is real.
-      </p>
-    </aside>
+    <Rail
+      label="Projects"
+      items={[{ href: "#all-projects", label: "01 Selected" }]}
+      note="Placeholder rows stay marked until the work is real."
+    />
 
     <section id="all-projects" class="section">
-      <p class="eyebrow">Work</p>
+      <p class="eyebrow">Selected Projects</p>
       <h1 class="display">Projects</h1>
       <p class="lede">
         A record of things I build while learning software and electronics.

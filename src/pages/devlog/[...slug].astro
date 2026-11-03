@@ -1,7 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import Rail from "../../components/Rail.astro";
 import { getCollection, render } from "astro:content";
 import { site } from "../../data/site.js";
+import { formatDate } from "../../lib/dates.js";
+import { numberLogEntries } from "../../lib/devlog.js";
 
 export async function getStaticPaths() {
   const posts = await getCollection("devlog");
@@ -14,17 +17,10 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 
-const ordered = (await getCollection("devlog")).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-);
-const logNumber = ordered.length - ordered.findIndex((p) => p.id === post.id);
-
-const formatDate = (date: Date) =>
-  date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+const logNumber =
+  numberLogEntries(await getCollection("devlog")).find(
+    (entry) => entry.post.id === post.id
+  )?.logNumber ?? 0;
 ---
 
 <Layout
@@ -32,21 +28,12 @@ const formatDate = (date: Date) =>
   description={post.data.summary}
 >
   <div class="shell page">
-    <aside class="rail" aria-label="Entry details">
-      <a class="rail-back" href="/devlog">← All entries</a>
-      <span class="rail-title">
-        Log {String(logNumber).padStart(3, "0")}
-      </span>
-      <ul class="rail-meta">
-        <li>
-          <time datetime={post.data.date.toISOString()}>
-            {formatDate(post.data.date)}
-          </time>
-        </li>
-        {post.data.tags &&
-          post.data.tags.map((tag) => <li>{tag}</li>)}
-      </ul>
-    </aside>
+    <Rail
+      label={`Log ${String(logNumber).padStart(3, "0")}`}
+      items={[{ href: "/devlog", label: "← All entries" }]}
+      meta={[formatDate(post.data.date, "long"), ...(post.data.tags ?? [])]}
+      ariaLabel="Entry details"
+    />
 
     <article>
       <p class="eyebrow">
@@ -67,30 +54,6 @@ const formatDate = (date: Date) =>
 </Layout>
 
 <style>
-  .rail-back {
-    display: inline-block;
-    margin-bottom: 1.25rem;
-    color: var(--lilac);
-    letter-spacing: 0.08em;
-    text-decoration: none;
-  }
-
-  .rail-back:hover {
-    color: var(--ink);
-  }
-
-  .rail-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.5rem 0 0;
-    list-style: none;
-    color: var(--muted);
-    font-size: 0.64rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
   .entry-title {
     margin-top: 0.5rem;
     font-size: var(--step-4);

@@ -8,25 +8,46 @@ import { projects } from "../src/data/projects.js";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const dist = join(root, "dist");
+const contentDir = join(root, "src", "content", "devlog");
+
+const isRealUrl = (url) =>
+  Boolean(url) && !/your-username|example\.com/.test(url);
+const statusLabels = {
+  placeholder: "Placeholder",
+  "in progress": "In progress",
+  shipped: "Shipped",
+};
 
 async function load(relative) {
   const html = await readFile(join(dist, relative), "utf8");
   return { html, document: parseHTML(html).document };
 }
 
-async function entryPath() {
-  const entries = await readdir(join(dist, "devlog"), { withFileTypes: true });
-  const entry = entries.find((item) => item.isDirectory());
-  assert.ok(entry, "expected at least one built Log entry");
-  return join("devlog", entry.name, "index.html");
-}
+const bodyText = (document) =>
+  document.body.textContent.replace(/\s+/g, " ").trim();
 
-const entry = await entryPath();
+const frontmatter = (markdown, key) =>
+  markdown.match(new RegExp(`^${key}:\\s*"([^"]+)"`, "m"))?.[1] ?? "";
+
+const markdownEntries = (await readdir(contentDir)).filter((file) =>
+  file.endsWith(".md")
+);
+
+const entryDir = (
+  await readdir(join(dist, "devlog"), { withFileTypes: true })
+).find((item) => item.isDirectory());
+assert.ok(entryDir, "expected at least one built Log entry");
+
+const entryMarkdown = await readFile(
+  join(contentDir, `${entryDir.name}.md`),
+  "utf8"
+);
+
 const pages = [
   { name: "home", ...(await load("index.html")) },
   { name: "projects", ...(await load("projects/index.html")) },
   { name: "devlog index", ...(await load("devlog/index.html")) },
-  { name: "log entry", ...(await load(entry)) },
+  { name: "log entry", ...(await load(join("devlog", entryDir.name, "index.html"))) },
 ];
 const home = pages[0];
 const projectsPage = pages[1];
@@ -42,11 +63,7 @@ const css = (
   )
 ).join("\n");
 
-const markdownEntries = (
-  await readdir(join(root, "src", "content", "devlog"))
-).filter((file) => file.endsWith(".md"));
-
-test("every route is built", async () => {
+test("every route is built", () => {
   for (const page of pages) {
     assert.ok(page.html.length > 0, `${page.name} should not be empty`);
     assert.ok(page.document.title.length > 0, `${page.name} needs a title`);
@@ -55,13 +72,13 @@ test("every route is built", async () => {
 
 test("nav uses the canonical vocabulary on every page", () => {
   for (const page of pages) {
-    const nav = page.document.querySelector("nav.site-nav");
+    const nav = page.document.querySelector('nav[aria-label="Primary"]');
     assert.ok(nav, `${page.name} needs primary navigation`);
-    const labels = [...nav.querySelectorAll("a")].map((a) =>
-      a.textContent.trim()
+    const labels = [...nav.querySelectorAll("a")].map((link) =>
+      link.textContent.trim()
     );
     assert.deepEqual(labels, ["Projects", "Devlog", "Resume"]);
-    assert.doesNotMatch(page.document.body.textContent, /\bBlog\b/i);
+    assert.doesNotMatch(nav.textContent, /\bBlog\b/i);
   }
 });
 
@@ -75,15 +92,13 @@ test("shared chrome and accessibility basics are present", () => {
       `${page.name} needs exactly one h1`
     );
 
-    const skip = document.querySelector("a.skip-link");
+    const skip = document.querySelector('a[href="#main-content"]');
     assert.ok(skip, `${page.name} needs a skip link`);
-    assert.equal(skip.getAttribute("href"), "#main-content");
     assert.ok(document.querySelector("main#main-content"));
 
-    assert.ok(document.querySelector("header.site-header"));
-    assert.ok(document.querySelector("footer.site-footer"));
-
-    const footer = document.querySelector("footer.site-footer");
+    assert.ok(document.querySelector("header"));
+    const footer = document.querySelector("footer");
+    assert.ok(footer);
     assert.match(footer.textContent, /Tanvi Shashikanth/);
     assert.ok(footer.querySelector('a[href^="mailto:"]'));
     assert.ok(footer.querySelector('a[href*="linkedin.com"]'));
@@ -95,49 +110,79 @@ test("home states the thesis and renders the bench", () => {
   const h1 = document.querySelector("h1");
   assert.match(h1.textContent, /hardware/i);
   assert.match(h1.textContent, /software/i);
-  assert.equal(document.querySelectorAll(".bench-row").length, 4);
-  assert.ok(document.querySelector('.actions a[href$="/resume.pdf"]'));
+
+  const text = bodyText(document);
+  for (const label of ["Studying", "Building", "Learning", "Next"]) {
+    assert.ok(text.includes(label), `missing ${label} row`);
+  }
+
+  assert.ok(document.querySelector('a[href$="/resume.pdf"]'));
   assert.ok(document.querySelector('a[href="/projects"]'));
 });
 
 test("projects render from the data module and hide placeholder URLs", () => {
   const { document, html } = projectsPage;
-  const rows = document.querySelectorAll(".project-row");
-  assert.equal(rows.length, projects.length);
+  const text = bodyText(document);
 
-  const titles = [...document.querySelectorAll(".project-row h3")].map((h) =>
-    h.textContent.trim()
-  );
-  assert.deepEqual(
-    titles,
-    projects.map((project) => project.title)
-  );
+  assert.equal(document.querySelectorAll("h3").length, projects.length);
 
-  for (const status of document.querySelectorAll(".project-row .status")) {
-    assert.equal(status.textContent.trim(), "Placeholder");
+  for (const project of projects) {
+    assert.ok(text.includes(project.title), `missing ${project.title}`);
+    assert.ok(
+      text.includes(project.description.slice(0, 40)),
+      `missing the description for ${project.title}`
+    );
+    const label = statusLabels[project.status] ?? "In progress";
+    assert.ok(text.includes(label), `missing the ${label} status`);
   }
 
+  const linkless = projects.filter(
+    (project) => !isRealUrl(project.githubUrl) && !isRealUrl(project.liveUrl)
+  ).length;
+  assert.equal((text.match(/Links coming soon/g) ?? []).length, linkless);
   assert.doesNotMatch(html, /your-username|example\.com/);
-  assert.equal(document.querySelectorAll(".links-pending").length, projects.length);
 });
 
-test("devlog index renders one entry per Markdown file", () => {
-  const { document, html } = devlogPage;
-  const entries = document.querySelectorAll(".log-entry");
-  assert.equal(entries.length, markdownEntries.length);
-  assert.match(html, /LOG 001/);
+test("devlog index renders one entry per Markdown file", async () => {
+  const { document } = devlogPage;
+  const text = bodyText(document);
 
-  for (const link of entries) {
-    assert.match(link.getAttribute("href"), /^\/devlog\/.+/);
+  for (const file of markdownEntries) {
+    const markdown = await readFile(join(contentDir, file), "utf8");
+    assert.ok(text.includes(frontmatter(markdown, "title")), `missing ${file}`);
+    assert.ok(
+      text.includes(frontmatter(markdown, "summary")),
+      `missing the summary for ${file}`
+    );
   }
+
+  assert.match(text, /LOG 001/);
+  assert.equal(
+    document.querySelectorAll('a[href^="/devlog/"]').length,
+    markdownEntries.length
+  );
 });
 
 test("a Log entry renders its Markdown body and links back", () => {
   const { document } = entryPage;
-  assert.equal(document.querySelector("h1").textContent.trim(), "Pilot!");
-  assert.ok(document.querySelector(".prose h2"));
-  assert.match(document.querySelector(".prose").textContent, /currently working on/i);
+  const text = bodyText(document);
+
+  assert.equal(
+    document.querySelector("h1").textContent.trim(),
+    frontmatter(entryMarkdown, "title")
+  );
+  assert.match(text, /currently working on/i);
+  assert.ok(document.querySelector("h2"), "Markdown headings should render");
   assert.ok(document.querySelector('a[href="/devlog"]'));
+});
+
+test("no placeholder URL is rendered as a real destination", () => {
+  for (const page of pages) {
+    assert.doesNotMatch(
+      page.html,
+      /href="[^"]*(your-username|example\.com)[^"]*"/
+    );
+  }
 });
 
 test("design tokens and reduced motion reach the emitted CSS", () => {

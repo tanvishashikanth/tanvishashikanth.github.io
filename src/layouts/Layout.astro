@@ -28,7 +28,6 @@ const fontHref =
     <meta property="og:type" content="website" />
     <title>{title}</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="alternate icon" href="/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href={fontHref} rel="stylesheet" />
@@ -89,43 +88,8 @@ const fontHref =
             )
           }
           <a href={site.linkedin} target="_blank" rel="noopener">LinkedIn</a>
-          <a href={site.resume} target="_blank" rel="noopener">Resume</a>
         </nav>
       </div>
     </footer>
-
-    <script>
-      const links = Array.from(
-        document.querySelectorAll<HTMLAnchorElement>("[data-rail-link]")
-      );
-      const sections = links
-        .map((link) =>
-          document.querySelector<HTMLElement>(link.getAttribute("href") ?? "")
-        )
-        .filter((section): section is HTMLElement => section !== null);
-
-      if ("IntersectionObserver" in window && sections.length > 0) {
-        const setActive = (id: string) => {
-          links.forEach((link) => {
-            link.classList.toggle(
-              "is-active",
-              link.getAttribute("href") === `#${id}`
-            );
-          });
-        };
-
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) setActive(entry.target.id);
-            });
-          },
-          { rootMargin: "-20% 0px -65% 0px", threshold: 0 }
-        );
-
-        sections.forEach((section) => observer.observe(section));
-        setActive(sections[0].id);
-      }
-    </script>
   </body>
 </html>

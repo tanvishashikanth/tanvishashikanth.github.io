@@ -5,7 +5,7 @@ interface Props {
   techStack?: string[];
   githubUrl?: string;
   liveUrl?: string;
-  status?: "placeholder" | "in progress" | "shipped" | string;
+  status?: "placeholder" | "in progress" | "shipped";
   index: number;
 }
 
@@ -20,13 +20,12 @@ const {
 } = Astro.props;
 
 const number = String(index).padStart(2, "0");
-const statusLabels: Record<string, string> = {
-  placeholder: "Placeholder",
-  "in progress": "In progress",
-  shipped: "Shipped",
-};
-const statusLabel = statusLabels[status] ?? status;
-const statusClass = `status-${status.replace(/\s+/g, "-")}`;
+const statusMap = {
+  placeholder: { label: "Placeholder", className: "status-placeholder" },
+  "in progress": { label: "In progress", className: "status-in-progress" },
+  shipped: { label: "Shipped", className: "status-shipped" },
+} as const;
+const statusInfo = statusMap[status] ?? statusMap["in progress"];
 
 const isRealUrl = (url: string) =>
   Boolean(url) && !/your-username|example\.com/.test(url);
@@ -40,7 +39,7 @@ const hasLinks = Boolean(github || live);
   <div class="project-body">
     <div class="project-head">
       <h3 class="display">{title}</h3>
-      <span class={`status ${statusClass}`}>{statusLabel}</span>
+      <span class={`status ${statusInfo.className}`}>{statusInfo.label}</span>
     </div>
     <p class="project-description">{description}</p>
     <div class="project-foot">
@@ -119,6 +118,11 @@ const hasLinks = Boolean(github || live);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     white-space: nowrap;
+  }
+
+  .status-placeholder {
+    border-color: var(--rule-strong);
+    color: var(--muted);
   }
 
   .status-shipped {
