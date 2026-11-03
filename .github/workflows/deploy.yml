@@ -1,5 +1,8 @@
 name: Build and Deploy
 
+# Triggered on pushes to master/main and manual runs.
+# Builds the site with Astro and pushes to GitHub Pages.
+
 on:
   push:
     branches: [ master, main ]
