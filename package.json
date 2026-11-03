@@ -9,9 +9,13 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "test": "astro build && node --test tests/site.test.mjs",
     "astro": "astro"
   },
   "dependencies": {
     "astro": "^7.1.6"
+  },
+  "devDependencies": {
+    "linkedom": "^0.18.15"
   }
 }

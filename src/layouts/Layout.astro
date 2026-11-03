@@ -1,115 +1,131 @@
 ---
-const { title = "Tanvi | Developer Portfolio" } = Astro.props;
+import "../styles/global.css";
+import { site } from "../data/site.js";
+
+const {
+  title = `${site.name} — Electronics & Computer Engineering`,
+  description = "Personal site and Devlog of Tanvi Shashikanth, an Electronics & Computer Engineering student at BITS Goa.",
+} = Astro.props;
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) =>
+  path === href || (href !== "/" && path.startsWith(`${href}/`));
+const year = new Date().getFullYear();
+
+const fontHref =
+  "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap";
 ---
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Personal developer portfolio and dev log" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f6f1e8" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
     <title>{title}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
-      rel="stylesheet"
-    />
+    <link href={fontHref} rel="stylesheet" />
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
     <header class="site-header">
-      <nav class="nav-container">
-        <a href="/" class="logo">Tanvi</a>
-        <div class="nav-links">
-          <a href="/">Home</a>
-          <a href="/projects">Projects</a>
-          <a href="/devlog">Blog</a>
-        </div>
-      </nav>
+      <div class="shell header-inner">
+        <a class="wordmark" href="/">
+          {site.name}<span class="monogram" aria-hidden="true">TS</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary">
+          <a
+            href="/projects"
+            aria-current={isCurrent("/projects") ? "page" : undefined}
+          >
+            Projects
+          </a>
+          <a
+            href="/devlog"
+            aria-current={isCurrent("/devlog") ? "page" : undefined}
+          >
+            Devlog
+          </a>
+          <a
+            class="nav-resume"
+            href={site.resume}
+            target="_blank"
+            rel="noopener"
+          >
+            Resume
+          </a>
+        </nav>
+      </div>
     </header>
 
-    <main>
+    <main id="main-content">
       <slot />
     </main>
 
     <footer class="site-footer">
-      <p>&copy; {new Date().getFullYear()} Tanvi. Built with Astro.</p>
+      <div class="shell footer-inner">
+        <div>
+          <p class="footer-name">{site.name}</p>
+          <p class="footer-meta">
+            Electronics &amp; Computer Engineering · BITS Goa
+          </p>
+          <p class="footer-meta">&copy; {year} {site.name}</p>
+        </div>
+        <nav class="footer-links" aria-label="Elsewhere">
+          <a href={`mailto:${site.email}`}>Email</a>
+          {
+            site.github && (
+              <a href={site.github} target="_blank" rel="noopener">
+                GitHub
+              </a>
+            )
+          }
+          <a href={site.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+          <a href={site.resume} target="_blank" rel="noopener">Resume</a>
+        </nav>
+      </div>
     </footer>
 
-    <style is:global>
-  :root {
-    /* Purple & gold theme - all pairings meet WCAG AA (>= 4.5:1 body text, >= 3:1 UI) */
-    --color-bg: #241b35;              /* deep aubergine page background */
-    --color-surface: #2f2447;         /* cards, header */
-    --color-surface-raised: #3a2d58;  /* hover / raised surfaces */
-    --color-accent: #f5c542;          /* royal gold - primary actions, highlights (10:1 on bg) */
-    --color-accent-light: #ffd76a;    /* brighter gold for hovers */
-    --color-violet: #b79df2;          /* readable violet for secondary accents (7:1 on bg) */
-    --color-text: #efeaf7;            /* near-white lavender text (~14:1 on bg) */
-    --color-text-muted: #c1b1d8;      /* secondary text (~8.8:1 on bg) */
-    --color-border: #453564;
-    --color-text-on-accent: #241b35;  /* dark purple text on gold fills (10:1) */
-  }
+    <script>
+      const links = Array.from(
+        document.querySelectorAll<HTMLAnchorElement>("[data-rail-link]")
+      );
+      const sections = links
+        .map((link) =>
+          document.querySelector<HTMLElement>(link.getAttribute("href") ?? "")
+        )
+        .filter((section): section is HTMLElement => section !== null);
 
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  body {
-    font-family: "Lora", Georgia, "Times New Roman", serif;
-    line-height: 1.6;
-    color: var(--color-text);
-    background: var(--color-bg);
-  }
-  main {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-    min-height: 70vh;
-  }
-  .site-header {
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-surface);
-  }  .nav-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .logo {
-    font-weight: 700;
-    font-size: 1.25rem;
-    text-decoration: none;
-    color: var(--color-accent);
-  }
-  .nav-links {
-    display: flex;
-    gap: 1.5rem;
-    margin-right: calc((100vw - 800px) / -4 + 1rem);
-  }
-  .nav-links a {
-    text-decoration: none;
-    color: var(--color-text-muted);
-    font-weight: 500;
-  }
-  .nav-links a:hover {
-    color: var(--color-accent-light);
-  }
-  .site-footer {
-    text-align: center;
-    padding: 2rem 1.5rem;
-    color: var(--color-text-muted);
-    font-size: 0.9rem;
-    border-top: 1px solid var(--color-border);
-  }
-  a:focus-visible,
-  button:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-</style>
+      if ("IntersectionObserver" in window && sections.length > 0) {
+        const setActive = (id: string) => {
+          links.forEach((link) => {
+            link.classList.toggle(
+              "is-active",
+              link.getAttribute("href") === `#${id}`
+            );
+          });
+        };
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) setActive(entry.target.id);
+            });
+          },
+          { rootMargin: "-20% 0px -65% 0px", threshold: 0 }
+        );
+
+        sections.forEach((section) => observer.observe(section));
+        setActive(sections[0].id);
+      }
+    </script>
   </body>
 </html>
