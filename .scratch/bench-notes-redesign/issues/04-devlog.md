@@ -1,6 +1,6 @@
 # T04 — Devlog index and Log entry pages
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 01
 
 ## Goal

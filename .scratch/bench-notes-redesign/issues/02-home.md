@@ -1,6 +1,6 @@
 # T02 — Home page
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 01
 
 ## Goal

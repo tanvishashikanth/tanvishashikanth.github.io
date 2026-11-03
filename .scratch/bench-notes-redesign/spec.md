@@ -1,6 +1,6 @@
 # Spec: Bench Notes site redesign
 
-Status: ready-for-agent
+Status: resolved
 
 ## Problem Statement
 

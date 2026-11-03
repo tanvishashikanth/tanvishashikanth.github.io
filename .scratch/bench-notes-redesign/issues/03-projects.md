@@ -1,6 +1,6 @@
 # T03 — Projects page and Project row
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 01
 
 ## Goal

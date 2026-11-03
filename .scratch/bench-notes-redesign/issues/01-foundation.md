@@ -1,6 +1,6 @@
 # T01 — Design system and shared chrome
 
-Status: ready-for-agent
+Status: resolved
 
 ## Goal
 

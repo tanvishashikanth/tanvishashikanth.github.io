@@ -1,6 +1,6 @@
 # T05 — Built-site output tests
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 02, 03, 04
 
 ## Goal
