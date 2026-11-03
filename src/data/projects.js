@@ -1,23 +1,24 @@
-// Add a new object to this array for each project you build.
-// Once you have a real project, just fill in these fields — no other code needs to change.
-
+// One entry per Project. Leave URLs empty until they are real.
+// `status` is one of: "placeholder", "in progress", "shipped".
 export const projects = [
   {
-    title: "Project Title Here",
+    title: "First project",
     description:
-      "A short 1-2 sentence description of what this project does and why you built it.",
-    techStack: ["React", "Node.js", "MongoDB"],
-    githubUrl: "https://github.com/your-username/project-repo",
-    liveUrl: "", // leave empty string if there's no live demo
+      "Placeholder for the first real Project. Replace this with what it does and why it exists.",
+    techStack: ["TBD"],
+    githubUrl: "",
+    liveUrl: "",
+    status: "placeholder",
     featured: true,
   },
   {
-    title: "Another Project",
+    title: "Second project",
     description:
-      "Another placeholder project description. Replace with your real project once it's ready.",
-    techStack: ["Python", "Flask"],
-    githubUrl: "https://github.com/your-username/another-repo",
-    liveUrl: "https://your-demo-link.com",
+      "Placeholder for the next Project. Add a short description, the stack, and real links when it is ready.",
+    techStack: ["TBD"],
+    githubUrl: "",
+    liveUrl: "",
+    status: "placeholder",
     featured: false,
   },
 ];

@@ -1,9 +1,13 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { getCollection, render } from 'astro:content';
+import Layout from "../../layouts/Layout.astro";
+import Rail from "../../components/Rail.astro";
+import { getCollection, render } from "astro:content";
+import { site } from "../../data/site.js";
+import { formatDate } from "../../lib/dates.js";
+import { numberLogEntries } from "../../lib/devlog.js";
 
 export async function getStaticPaths() {
-  const posts = await getCollection('devlog');
+  const posts = await getCollection("devlog");
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -12,71 +16,59 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
----
-<Layout title={`Tanvi | ${post.data.title}`}>
-  <article>
-    <a href="/devlog" class="back-link">← Back to Blog</a>
-    <span class="post-date">
-      {post.data.date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })}
-    </span>
-    <h1>{post.data.title}</h1>
-    {post.data.tags && (
-      <div class="tags">
-        {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
-      </div>
-    )}
-    <div class="content">
-      <Content />
-    </div>
-  </article>
 
-  <style>
-    .back-link {
-      display: inline-block;
-      color: var(--color-accent);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-    .back-link:hover {
-      color: var(--color-accent-light);
-      text-decoration: underline;
-    }
-    .post-date {
-      color: var(--color-accent);
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-    h1 { font-size: 2rem; margin: 0.5rem 0 0.5rem; }
-    .tags {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .tag {
-      background: rgba(183, 157, 242, 0.15);
-      color: var(--color-violet);
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
-    }
-    .content {
-      line-height: 1.8;
-      color: var(--color-text);
-    }
-    .content :global(h2) {
-      margin-top: 2rem;
-      margin-bottom: 0.75rem;
-    }
-    .content :global(ul) {
-      margin-left: 1.5rem;
-      margin-bottom: 1rem;
-    }
-  </style>
+const logNumber =
+  numberLogEntries(await getCollection("devlog")).find(
+    (entry) => entry.post.id === post.id
+  )?.logNumber ?? 0;
+---
+
+<Layout
+  title={`${post.data.title} — Devlog — ${site.name}`}
+  description={post.data.summary}
+>
+  <div class="shell page">
+    <Rail
+      label={`Log ${String(logNumber).padStart(3, "0")}`}
+      items={[{ href: "/devlog", label: "← All entries" }]}
+      meta={[formatDate(post.data.date, "long"), ...(post.data.tags ?? [])]}
+      ariaLabel="Entry details"
+    />
+
+    <article>
+      <p class="eyebrow">
+        Devlog · Log {String(logNumber).padStart(3, "0")}
+      </p>
+      <h1 class="display entry-title">{post.data.title}</h1>
+      <p class="entry-summary">{post.data.summary}</p>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <a class="back-link text-link" href="/devlog">
+        ← Back to the Devlog
+      </a>
+    </article>
+  </div>
 </Layout>
+
+<style>
+  .entry-title {
+    margin-top: 0.5rem;
+    font-size: var(--step-4);
+  }
+
+  .entry-summary {
+    max-width: 52ch;
+    margin-bottom: 2.5rem;
+    color: var(--muted);
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 3rem;
+  }
+</style>

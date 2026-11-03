@@ -1,34 +1,37 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import { projects } from '../data/projects.js';
+import Layout from "../layouts/Layout.astro";
+import Rail from "../components/Rail.astro";
+import ProjectRow from "../components/ProjectRow.astro";
+import { projects } from "../data/projects.js";
+import { site } from "../data/site.js";
 ---
-<Layout title="Tanvi | Projects">
-  <section>
-    <h1>Projects</h1>
-    <p class="intro">
-      A collection of things I've built while learning and exploring
-      software and electronics.
-    </p>
 
-    <div class="project-grid">
-      {projects.map((project) => <ProjectCard {...project} />)}
-    </div>
-  </section>
+<Layout
+  title={`Projects — ${site.name}`}
+  description="Selected Projects by Tanvi Shashikanth, an Electronics & Computer Engineering student at BITS Goa."
+>
+  <div class="shell page">
+    <Rail
+      label="Projects"
+      items={[{ href: "#all-projects", label: "01 Selected" }]}
+      note="Placeholder rows stay marked until the work is real."
+    />
 
-  <style>
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-    .intro {
-      color: var(--color-text-muted);
-      margin-bottom: 2rem;
-    }
-    .project-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-  </style>
+    <section id="all-projects" class="section">
+      <p class="eyebrow">Selected Projects</p>
+      <h1 class="display">Projects</h1>
+      <p class="lede">
+        A record of things I build while learning software and electronics.
+        Each row names the stack and, when it exists, the way to see it.
+      </p>
+
+      <div class="project-list">
+        {
+          projects.map((project, index) => (
+            <ProjectRow {...project} index={index + 1} />
+          ))
+        }
+      </div>
+    </section>
+  </div>
 </Layout>
