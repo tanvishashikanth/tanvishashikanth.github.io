@@ -25,7 +25,7 @@
 
   --measure: 64ch;
   --shell: 1120px;
-  --rail: 9rem;
+  --rail: 11rem;
   --header-h: 4.25rem;
 
   color-scheme: light;
@@ -624,6 +624,7 @@ h3.display {
   .rail {
     position: static;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.75rem;
     overflow-x: auto;

@@ -41,6 +41,7 @@ const { label, items, note, meta = [], ariaLabel = "On this page" } =
       </ul>
     )
   }
+  <slot />
   {note && <p class="rail-note">{note}</p>}
 </aside>
 
