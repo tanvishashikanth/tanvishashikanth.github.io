@@ -639,7 +639,7 @@ h3.display {
   .has-js .rail-toggle {
     display: block;
     position: fixed;
-    top: calc(var(--header-h) + 1.1rem);
+    top: calc(25vh + 2.7rem);
     left: 0;
     z-index: 59;
     padding: 0.85rem 0.32rem;
