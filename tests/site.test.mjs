@@ -187,13 +187,13 @@ test("no placeholder URL is rendered as a real destination", () => {
 
 test("design tokens and reduced motion reach the emitted CSS", () => {
   const tokens = {
-    "--paper": "#f6f1e8",
-    "--surface": "#fcf9f3",
+    "--paper": "#f4eff4",
+    "--surface": "#fbf8fb",
     "--ink": "#26202e",
     "--muted": "#6f6678",
     "--lilac": "#6e519b",
     "--lilac-soft": "#e9e1f4",
-    "--rule": "#d9cfc1",
+    "--rule": "#d9cfd8",
   };
 
   for (const [token, value] of Object.entries(tokens)) {

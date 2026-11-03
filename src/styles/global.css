@@ -1,13 +1,13 @@
 :root {
   /* Bench Notes palette */
-  --paper: #f6f1e8;
-  --surface: #fcf9f3;
+  --paper: #f4eff4;
+  --surface: #fbf8fb;
   --ink: #26202e;
   --muted: #6f6678;
   --lilac: #6e519b;
   --lilac-soft: #e9e1f4;
-  --rule: #d9cfc1;
-  --rule-strong: #bfb3a2;
+  --rule: #d9cfd8;
+  --rule-strong: #c2b7c4;
 
   /* Type roles */
   --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
