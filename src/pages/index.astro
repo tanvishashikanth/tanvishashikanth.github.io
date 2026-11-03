@@ -269,10 +269,45 @@ const selected = featured.length > 0 ? featured : projects.slice(0, 2);
   }
 
   @media (max-width: 820px) {
+    .hero h1 {
+      max-width: none;
+      font-size: clamp(2.2rem, 8.5vw, 3.4rem);
+    }
+
     .bench-index {
-      flex-basis: 100%;
-      width: 100%;
-      margin-top: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .index-head {
+      font-size: 0.5rem;
+      letter-spacing: 0.08em;
+    }
+
+    .index-head span:last-child {
+      display: none;
+    }
+
+    .index-row {
+      padding-block: 0.4rem;
+    }
+
+    .index-row dt {
+      font-size: 0.82rem;
+    }
+
+    .index-row dd {
+      font-size: 0.7rem;
+      line-height: 1.35;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-bio {
+      font-size: 1rem;
+    }
+
+    .actions {
+      gap: 0.75rem;
     }
   }
 </style>
